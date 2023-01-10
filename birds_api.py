@@ -19,8 +19,13 @@ class BirdsAPIService(object):
         url_path = "v2/data/obs/{}/recent".format(country_code)
         url = self.url_host + url_path
         response = {}
-        response["data"] = requests.get(url, data={}, headers=self.headers
-                                        ).json()
+        result = {}
+        try:
+            result = requests.get(url, data={}, headers=self.headers
+                                        )
+        except requests.ConnectionError:
+            return response
+        response["data"] = result.json()
         return response
 
     def get_recent_nearby(self, lat, lon):
@@ -34,8 +39,12 @@ class BirdsAPIService(object):
         url_path = "v2/data/obs/geo/recent?lat={}&lng={}".format(lat, lon)
         url = self.url_host + url_path
         response = {}
-        response["data"] = requests.get(url, data={}, headers=self.headers
-                                        ).json()
+        result = {}
+        try:
+            result = requests.get(url, data={}, headers=self.headers)
+        except requests.ConnectionError:
+            return response
+        response["data"] = result.json()
         return response
 
     def get_recent_notable(self, lat, lon):
@@ -55,8 +64,12 @@ class BirdsAPIService(object):
         url_path = "v2/data/obs/geo/recent/notable?lat={}&lng={}".format(lat, lon)
         url = self.url_host + url_path
         response = {}
-        response["data"] = requests.get(url, data={}, headers=self.headers
-                                        ).json()
+        result = {}
+        try:
+            result = requests.get(url, data={}, headers=self.headers)
+        except requests.ConnectionError:
+            return response
+        response["data"] = result.json()
         return response
 
     def get_hotspots(self, country_code):
@@ -70,5 +83,10 @@ class BirdsAPIService(object):
         url_path = "v2/ref/hotspot/{}".format(country_code)
         url = self.url_host + url_path
         response = {}
-        response["data"] = requests.get(url).text
+        result = {}
+        try:
+            result = requests.get(url, data={}, headers=self.headers)
+        except requests.ConnectionError:
+            return response
+        response["data"] = result.text
         return response
